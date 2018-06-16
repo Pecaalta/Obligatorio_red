@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+  <link rel="stylesheet" href="jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <script>
+    let namePar = ["id", "url", "idpublicacion", "name", "publicacion_id", "user_id", "title", "tag", "introduction", "full", "creation", "state", "author", "categoria_id", "avatar", "nick", "id_posts", "_page", "_start", "_end", "_limit", "_sort", "title_gte", "tag_gte", "introduction_gte", "full_gte", "creation_gte", "id_gte", "state_gte", "author_gte", "title_lte", "tag_lte", "introduction_lte", "full_lte", "creation_lte", "id_lte", "state_lte", "author_lte", "title_like", "tag_like", "introduction_like", "full_like", "creation_like", "id_like", "state_like", "author_like", "q", "View"];
+
+    function IsJsonString(str) {
+      try {
+        JSON.parse(str);
+      } catch (e) {
+        return false;
+      }
+      return true;
+    }
+    $(document).ready(function () {
+
+      $("#searchBy").change(function () {
+        alert("The text has been changed.");
+      });
+      for (var item in namePar) {
+        $("#nameParametros").html($("#nameParametros").html() + "<option value='" + namePar[item] + "'></option>");
+      }
+      $("#dropdown-metodo a").click(function () {
+        $("#searchLabel").text($(this).text());
+      });
+      $(".breadcrumb li").click(function () {
+        $(".breadcrumb li.active").removeClass("active");
+      });
+
+
+      $("#mandar").click(function () {
+        var data = "{}";
+        if ($(".textarea").val() !== "") {
+          data = $(".textarea").val();
+        }
+        $("#searchInput").removeClass("off");
+        $("#searchBy").removeClass("off");
+
+        if (IsJsonString(data)) {
+          var data = JSON.parse(data);
+          if ($("#searchBy").val() !== "" && /http/g.test($("#searchBy").val()) && $("#searchLabel").text() !== "Metodo") {
+            $.ajax({
+              type: $("#searchLabel").text(),
+              url: $("#searchBy").val(),
+              data: data,
+              beforeSend: function (xhr) {
+                $("#loader").removeClass("hidden");
+              },
+              success: function (data) {
+                $("#loader").addClass("hidden");
+                $("#Respuesta").addClass("active show");
+                $("#Consulta").removeClass("active show");
+                $("#res").text(JSON.stringify(data, null, 4) + "\n");
+              },
+              error: function (jqXHR, textStatus, errorThrown) {
+                $("#loader").addClass("hidden");
+                $("#Respuesta").addClass("active show");
+                $("#Consulta").removeClass("active show");
+                $("#res").text(JSON.stringify(jqXHR, null, 4) + "\n" + JSON.stringify(textStatus, null, 4) + "\n" + errorThrown + "\n");
+              }
+            });
+          }
+          if ($("#searchLabel").text() === "Metodo") {
+            $("#searchInput").addClass("off");
+          }
+          if ($("#searchBy").val() === "" || !/http/g.test($("#searchBy").val())) {
+            $("#searchBy").addClass("off");
+          }
+        } else {
+          $(".textarea").addClass("off");
+        }
+      });
+
+      $("#addParametro").click(function () {
+        var req = "{}";
+        var nameParametro = $("#nameParametro").val().toLowerCase();
+        var valParametro = $("#valParametro").val().toLowerCase();
+
+        if ($(".textarea").val() !== "") {
+          req = $(".textarea").val();
+        }
+        $(".textarea").removeClass("off");
+        $("#nameParametro").removeClass("off");
+        $("#valParametro").removeClass("off");
+
+        if (IsJsonString(req)) {
+          if (nameParametro !== "" && valParametro !== "") {
+            var parametro = {};
+            if (req !== "") {
+              parametro = JSON.parse(req);
+            }
+            if (nameParametro == "categorya" || nameParametro == "categoria_id" || nameParametro == "tag" || nameParametro == "files") {
+              if (!isNaN(parseInt(valParametro))) {
+                $("#valParametro").val(parseInt(valParametro));
+                if (typeof parametro[nameParametro] === 'undefined') {
+                  parametro[nameParametro] = [];
+                }
+                if (parametro[nameParametro].indexOf(valParametro) == -1) {
+                  parametro[nameParametro].push(valParametro);
+                }
+              } else {
+                $("#valParametro").addClass("off");
+              }
+            } else if (namePar.indexOf(nameParametro) !== -1) {
+              parametro[nameParametro] = valParametro;
+            } else {
+              $("#nameParametro").addClass("off");
+            }
+            console.log(JSON.stringify(parametro, null, 4));
+            $(".textarea").val(JSON.stringify(parametro, null, 4));
+          }
+          if (nameParametro === "") {
+            $("#nameParametro").addClass("off");
+          }
+          if (valParametro === "") {
+            $("#valParametro").addClass("off");
+          }
+        } else {
+          $(".textarea").addClass("off");
+        }
+
+      });
+
+      $(".Filtrar").keyup(function () {
+        let titulo, texto;
+        let filtro = $(".Filtrar").val().toUpperCase();
+        let cont = 0;
+        $(".card").each(function (index) {
+          titulo = $(this).find('.card-title').text().toUpperCase();
+          texto = $(this).find('.card-text').text().toUpperCase();
+          if (titulo.indexOf(filtro) == -1 && texto.indexOf(filtro) == -1) {
+            $(this).addClass('hidden');
+          } else {
+            cont++;
+            $(this).removeClass('hidden');
+          }
+        });
+        if (cont == 0) {
+          $(".NoHayTexto").removeClass('hidden');
+        } else {
+          $(".NoHayTexto").addClass('hidden');
+        }
+      });
+    });
+
+
+    $(function () {
+      var availableTags = [
+        "user",
+        "user/1",
+        "post",
+        "post/1",
+        "post/create", "categorya"
+      ];
+      $("#searchBy").autocomplete({
+        source: availableTags
+      });
+      $("#nameParametro").autocomplete({
+        source: namePar
+      });
+    });
+
+
+  </script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100vh;
+      height: 100%;
+      background: #222;
+      padding: 0;
+      margin: 0
+    }
+
+    body {
+      background: #8f46c9;
+      color: #eee;
+      padding-top: 10px;
+      margin: 0;
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 300;
+    }
+
+    .off {
+      background: rgba(10, 10, 10, 5);
+      border: rgba(0, 0, 0, .6) 1px solid;
+      color: #fff;
+    }
+
+    .card .card-text {
+      transition: all .5s;
+    }
+
+    .card-title {
+      margin: 10px 0;
+    }
+
+    .card {
+      margin: 10px 0;
+      background: #333;
+      box-shadow: 0 8px 8px rgba(10, 16, 20, .04), 0 0 8px rgba(10, 16, 20, .12);
+      text-decoration: none;
+    }
+
+    .card.active {
+      box-shadow: 0px 7px 10px -10px red;
+    }
+
+    .metodo {
+      padding: 5px;
+      width: 100%;
+      background: #fff;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+
+      align-items: center;
+    }
+
+    footer {
+      background: #222;
+      min-height: 20px;
+      width: 100%;
+      margin-top: 50px
+    }
+
+
+
+
+    .card.hidden {
+      height: 0;
+      overflow: hidden;
+    }
+
+
+
+
+    .input-group {
+      width: 100%;
+    }
+
+    .loader:before,
+    .loader:after,
+    .loader {
+      border-radius: 50%;
+      width: 2.5em;
+      height: 2.5em;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      -webkit-animation: load7 1.8s infinite ease-in-out;
+      animation: load7 1.8s infinite ease-in-out;
+    }
+
+    .loader {
+      margin: 8em auto;
+      font-size: 10px;
+      position: relative;
+      text-indent: -9999em;
+      -webkit-animation-delay: 0.16s;
+      animation-delay: 0.16s;
+    }
+
+    .loader:before {
+      left: -3.5em;
+    }
+
+    .loader:after {
+      left: 3.5em;
+      -webkit-animation-delay: 0.32s;
+      animation-delay: 0.32s;
+    }
+
+    .loader:before,
+    .loader:after {
+      content: '';
+      position: absolute;
+      top: 0;
+    }
+
+    @-webkit-keyframes load7 {
+      0%,
+      80%,
+      100% {
+        box-shadow: 0 2.5em 0 -1.3em #09F;
+      }
+      40% {
+        box-shadow: 0 2.5em 0 0 #09F;
+      }
+    }
+
+    @keyframes load7 {
+      0%,
+      80%,
+      100% {
+        box-shadow: 0 2.5em 0 -1.3em #09F;
+      }
+      40% {
+        box-shadow: 0 2.5em 0 0 #09F;
+      }
+    }
+
+    #loader {
+      transition: all .5s;
+    }
+
+    .hidden {
+      opacity: 0;
+    }
+
+
+
+
+
+
+
+    .stripes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      -webkit-background-size: 30px 30px;
+      -moz-background-size: 30px 30px;
+      background-size: 30px 30px;
+      background-image: -webkit-gradient(linear, left top, right bottom,
+      color-stop(.25, rgba(0, 0, 0, .1)), color-stop(.25, transparent),
+      color-stop(.5, transparent), color-stop(.5, rgba(0, 0, 0, .1)),
+      color-stop(.75, rgba(0, 0, 0, .1)), color-stop(.75, transparent),
+      to(transparent));
+      background-image: -webkit-linear-gradient(135deg, rgba(0, 0, 0, .1) 25%, transparent 25%,
+      transparent 50%, rgba(0, 0, 0, .1) 50%, rgba(0, 0, 0, .1) 75%,
+      transparent 75%, transparent);
+      background-image: -moz-linear-gradient(135deg, rgba(0, 0, 0, .1) 25%, transparent 25%,
+      transparent 50%, rgba(0, 0, 0, .1) 50%, rgba(0, 0, 0, .1) 75%,
+      transparent 75%, transparent);
+      background-image: -ms-linear-gradient(135deg, rgba(0, 0, 0, .1) 25%, transparent 25%,
+      transparent 50%, rgba(0, 0, 0, .1) 50%, rgba(0, 0, 0, .1) 75%,
+      transparent 75%, transparent);
+      background-image: -o-linear-gradient(135deg, rgba(0, 0, 0, .1) 25%, transparent 25%,
+      transparent 50%, rgba(0, 0, 0, .1) 50%, rgba(0, 0, 0, .1) 75%,
+      transparent 75%, transparent);
+      background-image: linear-gradient(135deg, rgba(0, 0, 0, .1) 25%, transparent 25%,
+      transparent 50%, rgba(0, 0, 0, .1) 50%, rgba(0, 0, 0, .1) 75%,
+      transparent 75%, transparent);
+      -webkit-animation: animate-stripes 3s linear infinite;
+      -moz-animation: animate-stripes 3s linear infinite;
+    }
+
+    @-webkit-keyframes animate-stripes {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 60px 0;
+      }
+    }
+
+    @-moz-keyframes animate-stripes {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 60px 0;
+      }
+    }
+
+    #Home h2 {
+      margin: 50px 0 25px;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, .7);
+      font-weight: 900;
+    }
+
+    #Home p {
+      text-align: center;
+      color: rgba(0, 0, 0, .5);
+    }
+
+    .Filtrar {
+      transition: all .2s;
+      border-radius: 30px;
+      border: none;
+      margin: 50px auto;
+      background: rgba(0, 0, 0, .3);
+      color: #fff;
+      padding: 0.8rem 1.8rem;
+    }
+  </style>
+</head>
+
+<body>
+
+
+
+  <div class="container">
+    <br>
+    <h3 style="text-align: center;margin:10PX 0">API</h3>
+
+    <ul class="nav nav-tabs metodo" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link btn btn-primary" href="#Informacion" role="tab" data-toggle="tab">Informacion</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-primary" href="#Consulta" role="tab" data-toggle="tab">Probar</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane fade  active show" id="Home">
+        <h2 class="text-center">Bienvenido</h2>
+        <p class="text-center">A sticky navigation bar stays fixed at the top of the page when you scroll past it.</p>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="Respuesta">
+        <h2 class="text-center" style="margin: 50px 0">Request jsons</h2>
+        <textarea class="form-control" rows="5" id="textarea"></textarea>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="Consulta">
+        <br>
+        <div class="row d-flex justify-content-center">
+          <div class="col-8 form-group">
+            <label for="searchBy">Url Destino</label>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">http://localhost/</span>
+              </div>
+              <input type="text" class="form-control" id="searchBy" aria-describedby="basic-addon3">
+            </div>
+          </div>
+          <div class="col-4 form-group">
+            <label for="searchInput">Metodo</label>
+            <div class="dropdown">
+              <button class="btn btn-dark dropdown-toggle col-12" type="button" id="searchInput" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                <span data-bind="label" id="searchLabel">Metodo</span>
+                <span class="caret"></span>
+              </button>
+              <div class="dropdown-menu col-12" id="dropdown-metodo" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">POST</a>
+                <a class="dropdown-item" href="#">GET</a>
+                <a class="dropdown-item" href="#">PUT</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 form-group">
+            <label for="nameParametro">Nombre</label>
+            <input type="text" class="form-control" placeholder="Nombre" id="nameParametro">
+          </div>
+          <div class="col-4 form-group">
+            <label for="valParametro">Valor</label>
+            <input type="text" class="form-control" placeholder="Valor" id="valParametro">
+          </div>
+          <div class="col-4 form-group">
+            <button class="btn btn-dark col-12" style="margin-top:32px;" id="addParametro">Agregar</button>
+          </div>
+        </div>
+        <div class="row" style="margin:15px 0">
+          <label for="textarea">Request json:</label>
+          <textarea class="form-control textarea" rows="5" id="textarea"></textarea>
+        </div>
+        <div class="row justify-content-center" style="margin:15px 0">
+          <button class="btn btn-dark col-4" type="button" id="Mandar">Mandar</button>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane fade" id="Informacion">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control Filtrar col-5" placeholder="Buscar ...">
+        </div>
+        <div class="card mb-3">
+          <img class="card-img-top" src="..." alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Crear categoria</h5>
+            <p class="card-text">La implementacion de nuevas categorias se ase medinte una peticion Post a /category pasandole un objeto de tipo
+              { "categorya": [ "Nombre 1", "Nombre 2" ] }, Donde el arreglo de categorya contendra cada nueva categoria que
+              se dese agregar
+            </p>
+            <p class="card-text">
+              <small class="text-muted">Last updated 3 mins ago</small>
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Card title</h4>
+            <p class="card-text hidden">Some example text. Some example text.</p>
+          </div>
+        </div>
+        <h2 class="NoHayTexto text-center hidden" style="color: rgba(0, 0, 0, .1);font-weight: 900;margin: 50px 0">No hay texto</h2>
+      </div>
+    </div>
+
+
+    <div class="stripes hidden"> </div>
+
+
+
+  </div>
+
+  <footer>
+  </footer>
+
+</body>
+
+</html>
