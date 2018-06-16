@@ -31,7 +31,7 @@ class SQLpublicaciones {
     public static function crear($BaseDatos,$datos) {
         try {
             $sql = "INSERT INTO " . tPublicacion . " (" . join(", ", array_keys($datos)) . ") VALUES ('" . join("', '", array_values($datos)) . "');";
-            $result = $BaseDatos->mandar($sql);
+            return $BaseDatos->create($sql);
         } catch (Exception $exc) {
             return $exc->getTraceAsString();
         }
@@ -99,7 +99,10 @@ class SQLpublicaciones {
                     } else if ($key === "View") {
                         $WHERE["View"] = $value;
                     } else {
+                        if (!isset($WHERE["otros"])) $WHERE["otros"] = [];
+                        if (gettype($key) == 'string' and gettype($value) == 'string' ){
                         $WHERE["otros"][] = $key . " = " . $value;
+                        }
                     }
                 }
             }

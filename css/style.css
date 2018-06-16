@@ -1,0 +1,202 @@
+* {
+    -webkit-user-select: none; /* Safari 3.1+ */
+    -moz-user-select: none; /* Firefox 2+ */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Standard syntax */
+    font-family: 'Roboto', sans-serif;
+}
+input:hover,input:focus,input:active{ outline: 0!important; box-shadow: none!important; border: none!important; }
+input { width: 100%; margin: 0; }
+td{ padding: 0!important; }
+td span{ margin: .75rem!important; display: block; }
+td input{ padding: .75rem!important; display: block; border: none; }
+body { background: #333; padding-top: 220px;}
+html, body { min-height: 100% }
+.nav-pills {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.nav-pills a {
+    padding: 0.5rem 0.8rem;
+    display: inline-block;
+    color: #666;
+    transition: 0.5s all;
+}
+.nav-pills a:hover,
+.nav-pills a:focus,
+.nav-pills a:active {
+    color: #222;
+    text-decoration: none;
+}
+#Introduccion p {
+    display: inline-block;
+
+}
+h1 {
+    text-align: center;
+}
+.input { 
+    background: rgba(0,0,0,.05);
+    border-radius: 5px; 
+    transition: all 500ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    border: none;
+    padding: 0;
+    max-width: 500px!important;
+    margin: auto;
+}
+input.input{
+    border: none!important;
+    background: none!important;    }
+.input:hover,.input:focus { 
+    box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.1);
+    background: rgba(0,0,0,.2);
+}
+#InputURL { 
+    border: none!important;
+    background: none!important;
+    padding:  0.5rem 0.8rem 0.5rem 0;
+    border-radius: 5px
+}
+
+#Main { padding: 5px;
+        background: #332222;
+        box-shadow:  0px 4px 8px -3px rgba(17, 17, 17, .06);
+        /*
+        text-align: center;
+        color: #6200ee;
+        */
+        font-weight: bold;
+
+        background-image: url("https://pre00.deviantart.net/06f3/th/pre/f/2015/009/c/0/wallpaper_from_imac_retina_by_sanchez901127-d8d6t8t.jpg"); 
+        background-repeat:no-repeat;
+        background-size:cover;
+        background-attachment: fixed; 
+        box-shadow:  0px 4px 8px -3px rgba(17, 17, 17, .6);
+        height: 200px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        z-index: 1001;
+        transition: all .5s;
+}
+button{border: none!important}
+
+.container { max-width: 800px; 
+             margin-bottom: 30px}
+.main{
+    box-shadow: 0 1px 1px 0 rgba(60,64,67,.08), 0 1px 3px 1px rgba(60,64,67,.16);
+    padding: 10px 20px 30px;
+    background: #fff;
+    border-radius: 2px;
+    position: relative;
+    background: #fff;
+    box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.2), 0px 7px 10px 1px rgba(0, 0, 0, 0.14), 0px 2px 16px 1px rgba(0, 0, 0, 0.12);
+}
+
+.nav-link { font-weight: 500; color: #555 }
+.nav-link.active { font-weight: 900; color: #222 }
+
+#TextJson,#res { min-height: 200px; resize: none; width: 100%;margin: 30px 0!important;border: 1px solid #dee2e6;padding: 5px;color: #333}
+table {margin: 10px 0 30px!important}
+
+#send { padding: 0.5rem 1.8rem ; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); cursor: pointer;}
+.tool {display: flex;justify-content: space-between; padding: 5px 15px}
+
+.nav-menu { position: fixed; left: -300px; top: 0; width: 100vw; height: 100%; max-width: 300px; box-shadow:  0px 0px 10px 1px rgba(17, 17, 17, .5); z-index: 1002; background: #fff; transition: all .5s; }
+.nav-menu.active { left: 0;}
+.nav-menu h1 { background: #eee }
+.nav-menu ul { padding: 0.5rem; height: 100%; margin: 0}
+.nav-menu li { list-style: none; width: 100%; padding: .5rem; text-align: center; margin: 0}
+.nav-menu a { background: #eee; color: #333; display: block; padding: .5rem 1.8rem; width: 100%;border-radius: 3px; text-decoration: none; transition: all .5s;}
+.nav-menu a:hover { background: rgb(244, 67, 54); color: #fff; box-shadow:
+                        rgba(0, 0, 0, 0.14) 0px 4px 20px 0px, rgba(244, 67, 54, 0.4) 0px 7px 10px -5px;}
+
+#Main.active{ height: 100vh; padding: 20PX}
+.page{background-color: #fff;transition: all .5s;
+      box-shadow: 0px 4px 5px -2px rgba(0, 0, 0, 0.2), 0px 7px 10px 1px rgba(0, 0, 0, 0.14), 0px 2px 16px 1px rgba(0, 0, 0, 0.12);
+      padding: 40px;border-radius: 5px;margin: 0 auto;height: 100%}
+
+.paginasHelp{ position: absolute; left: 0; top: 0; background-color: #333; display:none; }
+#Help { position: fixed;z-index: 99999; background: rgba(0, 0, 0, 0.5); color: #fff; cursor: pointer;padding: 10px 15px;border-radius: 3px;bottom: 10px; right: 10px;width: auto;border: none;transition: all .5s;}
+#Help:hover { background: rgb(244, 67, 54); color: #fff; box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);}
+.page.active {
+    opacity: 0;transform: translateY(-100px);
+}
+#Host {color: #aaa;
+       line-height: 40px;
+       padding: 0 0 0 10px;
+}
+
+
+
+
+
+
+.loader:before,
+.loader:after,
+.loader {
+    border-radius: 50%;
+    width: 2.5em;
+    height: 2.5em;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load7 1.8s infinite ease-in-out;
+    animation: load7 1.8s infinite ease-in-out;
+}
+.loader {
+    margin: 8em auto;
+    font-size: 10px;
+    position: relative;
+    text-indent: -9999em;
+    -webkit-animation-delay: 0.16s;
+    animation-delay: 0.16s;
+}
+.loader:before {
+    left: -3.5em;
+}
+.loader:after {
+    left: 3.5em;
+    -webkit-animation-delay: 0.32s;
+    animation-delay: 0.32s;
+}
+.loader:before,
+.loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+}
+@-webkit-keyframes load7 {
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 2.5em 0 -1.3em #09F;
+    }
+    40% {
+        box-shadow: 0 2.5em 0 0 #09F;
+    }
+}
+@keyframes load7 {
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 2.5em 0 -1.3em #09F;
+    }
+    40% {
+        box-shadow: 0 2.5em 0 0 #09F;
+    }
+}
+#loader{
+    transition: all .5s;
+}
+.hidden{
+    opacity: 0;
+}
+
+.off{
+    box-shadow: 0 0 10px 0px rgb(244, 67, 54)!important;
+}
+
+
+

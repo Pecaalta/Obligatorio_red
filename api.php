@@ -61,6 +61,7 @@ class api {
             header('Location: ' . "http://" . $_SERVER['SERVER_NAME'] . "\index.html");
         } else {
             $this->retorno["Error"] = 'HTTP/1.1 405 Method Not - 3';
+            header(" http/1.1 405 Method Not - 3" );
         }
     }
 
@@ -84,8 +85,8 @@ class api {
 
             default:
                 $this->retorno["Error"] = 'HTTP/1.1 405 Method Not - 4';
-                //header('HTTP/1.1 405 Method Not Allowed');
-                //header('Allow: GET, PUT, POST');
+                header('HTTP/1.1 405 Method Not Allowed');
+                header('Allow: GET, PUT, POST');
                 break;
         }
     }
@@ -95,30 +96,31 @@ class api {
 
         if (is_null($this->retorno["Data"]) || $this->retorno["Data"] === "" || sizeof($this->retorno["Data"]) === 0) {
             $this->retorno["Error"] = 'HTTP/1.1 400 Bad Request - 5';
-            //header('HTTP/1.1 400 Bad Request');
+            header('HTTP/1.1 400 Bad Request');
         }
         if ($this->resource === 'post') {
-            if (!isset($this->retorno["Data"]['title'])){
+            if (!isset($this->retorno["Data"]['title'])) {
                 $this->retorno["result"] = "Title faltante";
-            }else if (!isset($this->retorno["Data"]['full']) ){
+            } else if (!isset($this->retorno["Data"]['full'])) {
                 $this->retorno["result"] = "Texto faltante";
-            }else if (!isset($this->retorno["Data"]['categoria_id'])){
+            } else if (!isset($this->retorno["Data"]['categoria_id'])) {
                 $this->retorno["result"] = "Categorya faltante";
-            }else if (strlen($this->retorno["Data"]['title'])== 0){
+            } else if (strlen($this->retorno["Data"]['title']) == 0) {
                 $this->retorno["result"] = "Title esta vacio";
-            }else if (strlen($this->retorno["Data"]['full'])< 60){
+            } else if (strlen($this->retorno["Data"]['full']) < 60) {
                 $this->retorno["result"] = "Texto demasiado corto";
-            }else if (sizeof($this->retorno["Data"]['categoria_id']) == 0){
+            } else if (sizeof($this->retorno["Data"]['categoria_id']) == 0) {
                 $this->retorno["result"] = "Faltan categorias";
-            }else{
+            } else {
                 $this->retorno["result"] = Publicacion::Post_Crear_publicacion_1($this->retorno["Data"]);
+                    header(" http/1.1 200 ok" );
             }
-
         } else if ($this->resource === 'category') {
             $this->retorno["result"] = Categoria::Post_Crear_Categoria($this->retorno["Data"]);
+                    header(" http/1.1 200 ok" );
         } else {
             $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 6';
-            //header('HTTP/1.1 409 Conflict');
+            header('HTTP/1.1 409 Conflict');
         }
     }
 
@@ -134,15 +136,17 @@ class api {
                 if ($name !== "" and is_numeric($name)) {
                     if (isset($this->retorno["Data"]["id_posts"]) && !isset($this->retorno["Data"]["avatar"])) {
                         $this->retorno["result"] = User::Put_Marcar_favorita($name, $this->retorno["Data"]["id_posts"]);
+                    header(" http/1.1 200 ok" );
                     } else if (!isset($this->retorno["Data"]["id_posts"]) && isset($this->retorno["Data"]["avatar"])) {
                         $this->retorno["result"] = User::Put_Actualizar_avatar($name, $this->retorno["Data"]["avatar"]);
+                    header(" http/1.1 200 ok" );
                     } else {
                         $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 7';
-                        //header('HTTP/1.1 409 Conflict');
+                        header('HTTP/1.1 409 Conflict');
                     }
                 } else {
                     $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 8';
-                    //header('HTTP/1.1 409 Conflict');
+                    header('HTTP/1.1 409 Conflict');
                 }
                 break;
 
@@ -150,17 +154,19 @@ class api {
                 $id = strtolower(array_shift($this->uri));
                 if (isset($name) and isset($this->retorno["Data"]["estado"])) {
                     $this->retorno["result"] = Publicacion::Put_Publicar($name, $this->retorno["Data"]["estado"]);
+                    header(" http/1.1 200 ok" );
                 } else if (isset($name) and $id !== "" and is_numeric($name)) {
                     $this->retorno["result"] = Publicacion::Put_Editar_publicacion($name, $this->retorno["Data"]);
+                    header(" http/1.1 200 ok" );
                 } else {
                     $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 9';
-                    //header('HTTP/1.1 409 Conflict');
+                    header('HTTP/1.1 409 Conflict');
                 }
                 break;
 
             default:
                 $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 10';
-            //header('HTTP/1.1 409 Conflict');
+                header('HTTP/1.1 409 Conflict');
         }
     }
 
@@ -175,6 +181,7 @@ class api {
                 $id = strtolower(array_shift($this->uri));
                 if ($id != "" and is_numeric($id)) {
                     $this->retorno["result"] = User::Get_Mostrar_Perfil($id);
+                    header(" http/1.1 200 ok" );
                 } else {
                     $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 11';
                     header('HTTP/1.1 409 Conflict');
@@ -185,22 +192,25 @@ class api {
                 $uri = strtolower(array_shift($this->uri));
                 if ($uri === "") {
                     $this->retorno["result"] = Publicacion::Get_Listar_publicaciones($this->retorno["Data"]);
+                    header(" http/1.1 200 ok" );
                 } else if ($uri === "create") {
                     $this->retorno["result"] = Categoria::Get_Crear_publicacion_2();
+                    header(" http/1.1 200 ok" );
                 } else if (is_numeric($uri)) {
                     $this->retorno["result"] = Publicacion::Get_Ver_publicacion($uri);
+                    header(" http/1.1 200 ok" );
                 } else {
                     $this->retorno["Error"] = 'HTTP/1.1 409 Conflict - 12';
-                    //header('HTTP/1.1 409 Conflict');
+                    header('HTTP/1.1 409 Conflict');
                 }
+                unset($this->retorno["Data"]);
                 break;
 
             default:
-                //header('Location: ' . "http://" . $_SERVER['SERVER_NAME'] . "\index.html");
-            //$this->retorno["Error"] = 'HTTP/1.1 404 Not Found';
-            header('HTTP/1.1 409 Conflict');
+                //$this->retorno["Error"] = 'HTTP/1.1 404 Not Found';
+                header('Location: ' . "http://" . $_SERVER['SERVER_NAME'] . "\index.html");
+                header('HTTP/1.1 409 Conflict');
         }
-        //header('HTTP/1.1 404 Not Found');
     }
 
     private function paths($url) {

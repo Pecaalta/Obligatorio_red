@@ -10,9 +10,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
-  <link rel="stylesheet" href="jquery-ui.css">
+  <link rel="stylesheet" href="css/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+
 
   <script>
     let namePar = ["id", "url", "idpublicacion", "name", "publicacion_id", "user_id", "title", "tag", "introduction", "full", "creation", "state", "author", "categoria_id", "avatar", "nick", "id_posts", "_page", "_start", "_end", "_limit", "_sort", "title_gte", "tag_gte", "introduction_gte", "full_gte", "creation_gte", "id_gte", "state_gte", "author_gte", "title_lte", "tag_lte", "introduction_lte", "full_lte", "creation_lte", "id_lte", "state_lte", "author_lte", "title_like", "tag_like", "introduction_like", "full_like", "creation_like", "id_like", "state_like", "author_like", "q", "View"];
@@ -27,9 +29,6 @@
     }
     $(document).ready(function () {
 
-      $("#searchBy").change(function () {
-        alert("The text has been changed.");
-      });
       for (var item in namePar) {
         $("#nameParametros").html($("#nameParametros").html() + "<option value='" + namePar[item] + "'></option>");
       }
@@ -51,19 +50,21 @@
 
         if (IsJsonString(data)) {
           var data = JSON.parse(data);
-          if ($("#searchBy").val() !== "" && /http/g.test($("#searchBy").val()) && $("#searchLabel").text() !== "Metodo") {
+          if ($("#searchBy").val() !== "" && $("#searchLabel").text() !== "Metodo") {
             $.ajax({
               type: $("#searchLabel").text(),
-              url: $("#searchBy").val(),
+              url: "http://localhost/"+$("#searchBy").val(),
               data: data,
               beforeSend: function (xhr) {
                 $("#loader").removeClass("hidden");
+                console.log("paso 1");
               },
               success: function (data) {
                 $("#loader").addClass("hidden");
                 $("#Respuesta").addClass("active show");
                 $("#Consulta").removeClass("active show");
                 $("#res").text(JSON.stringify(data, null, 4) + "\n");
+                console.log(JSON.stringify(data, null, 4) + "\n");
               },
               error: function (jqXHR, textStatus, errorThrown) {
                 $("#loader").addClass("hidden");
@@ -140,10 +141,12 @@
         let cont = 0;
         $(".card").each(function (index) {
           titulo = $(this).find('.card-title').text().toUpperCase();
-          texto = $(this).find('.card-text').text().toUpperCase();
+          texto = $(this).find('.card-text'
+          ).text().toUpperCase();
           if (titulo.indexOf(filtro) == -1 && texto.indexOf(filtro) == -1) {
             $(this).addClass('hidden');
           } else {
+          console.log(titulo + " : " + texto);
             cont++;
             $(this).removeClass('hidden');
           }
@@ -213,9 +216,11 @@
 
     .card {
       margin: 10px 0;
+      padding: 10px 20px 20px 20px;
       background: #333;
       box-shadow: 0 8px 8px rgba(10, 16, 20, .04), 0 0 8px rgba(10, 16, 20, .12);
       text-decoration: none;
+      overflow: hidden;
     }
 
     .card.active {
@@ -229,8 +234,10 @@
       border-radius: 5px;
       display: flex;
       justify-content: space-between;
-
       align-items: center;
+    }
+    .metodo li {
+    	padding: 5px;
     }
 
     footer {
@@ -244,8 +251,7 @@
 
 
     .card.hidden {
-      height: 0;
-      overflow: hidden;
+      display: none
     }
 
 
@@ -401,41 +407,134 @@
       color: #fff;
       padding: 0.8rem 1.8rem;
     }
+
+    cite {
+    	display: block;
+    	color: #eeeeee!important;
+    }
+
+
+    .card:before{
+      position: absolute;
+	    content: "";
+	    right: 0;
+	    bottom: 0;
+	    height: 200px;
+	    width: 200px;
+	    background-size: cover;
+	    background-position: 50% 50%;
+	    z-index: 0;
+	     opacity: 0.1;
+	    transform: translate(50px, 50px)
+    }
+    .cat:before{
+	    background-image: url(img/Categorya.svg);
+	}
+    .post:before{
+	    background-image: url(img/post.svg);
+	}
+    .help:before{
+	    background-image: url(img/help.svg);
+	}
+    .pdf:before{
+	    background-image: url(img/pdf.svg);
+	}
+    .sql:before{
+	    background-image: url(img/sql.svg);
+	}
+
+    .card-body {
+    	z-index: 1;
+    }
+    .card-body a {
+    	display: inline-block;
+    	border-radius: 3px;
+    	margin: 5px;
+    	padding: .5rem .8rem;
+    	color: #ddd;
+    }
+    .card-body a:hover {
+    	background: rgba(0,0,0,.1);
+    	text-decoration: none;
+    	outline: 0;
+    }
+    .card-body .justify-center {
+    	display: flex;
+    	justify-content: center;
+    }
+    .card-title {text-align: center;}
+    @media only screen and (max-width: 600px) {
+	    .response {
+	    	display: none;
+	    }
+	}
+	a, a:hover,a:active,a:focus {
+		outline: 0;
+		text-decoration: none;
+	}
+	.up {
+		position: fixed;
+		bottom: 10px;
+		right: 10px;
+		width: 50px;
+		height: 50px;
+		border-radius: 25px;
+		background: #333;
+		color: #eee;
+	     background-color: #333;
+	    box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
+	    display: flex;
+	    justify-content: center;
+	    line-height: 50px;
+	    font-size: 20px;
+	    transition: all .5s;
+	}
+	.up:hover {
+		color: #fff;
+	     background-color: #333;
+	    box-shadow: 0 5px 20px 0 rgba(0,0,0,.6);
+	}
+	* {
+	    transition: all .5s;
+	}
+
   </style>
 </head>
 
-<body>
+<body id="body">
 
 
 
   <div class="container">
     <br>
-    <h3 style="text-align: center;margin:10PX 0">API</h3>
-
+    <img src="img/api.svg" style="min-width:100px;max-width:200px;width:50%;display: block;margin: auto;">
     <ul class="nav nav-tabs metodo" role="tablist">
-      <li class="nav-item">
+      <li class="nav-item col-4 col-md-3 col-lg-2">
         <a class="nav-link btn btn-primary" href="#Informacion" role="tab" data-toggle="tab">Informacion</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link btn btn-primary" href="#Consulta" role="tab" data-toggle="tab">Probar</a>
+      <li class="nav-item col-4 col-md-3 col-lg-2">
+        <a class="nav-link col-12 btn btn-primary" href="#Consulta" role="tab" data-toggle="tab">Probar</a>
       </li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
+
       <div role="tabpanel" class="tab-pane fade  active show" id="Home">
         <h2 class="text-center">Bienvenido</h2>
         <p class="text-center">A sticky navigation bar stays fixed at the top of the page when you scroll past it.</p>
       </div>
+
       <div role="tabpanel" class="tab-pane fade" id="Respuesta">
         <h2 class="text-center" style="margin: 50px 0">Request jsons</h2>
-        <textarea class="form-control" rows="5" id="textarea"></textarea>
+        <textarea class="form-control" rows="5" id="res"></textarea>
       </div>
+
       <div role="tabpanel" class="tab-pane fade" id="Consulta">
         <br>
-        <div class="row d-flex justify-content-center">
-          <div class="col-8 form-group">
-            <label for="searchBy">Url Destino</label>
+        <div class="row">
+          <div class="col-12 col-md-8 form-group">
+            <label for="searchBy" class="response">Url Destino</label>
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon3">http://localhost/</span>
@@ -443,8 +542,8 @@
               <input type="text" class="form-control" id="searchBy" aria-describedby="basic-addon3">
             </div>
           </div>
-          <div class="col-4 form-group">
-            <label for="searchInput">Metodo</label>
+          <div class="col-12 col-md-4 form-group">
+            <label for="searchInput" class="response">Metodo</label>
             <div class="dropdown">
               <button class="btn btn-dark dropdown-toggle col-12" type="button" id="searchInput" data-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
@@ -460,61 +559,162 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-4 form-group">
-            <label for="nameParametro">Nombre</label>
+          <div class="col-6 col-md-4 form-group">
+            <label for="nameParametro ">Nombre</label>
             <input type="text" class="form-control" placeholder="Nombre" id="nameParametro">
           </div>
-          <div class="col-4 form-group">
+          <div class="col-6 col-md-4 form-group">
             <label for="valParametro">Valor</label>
             <input type="text" class="form-control" placeholder="Valor" id="valParametro">
           </div>
-          <div class="col-4 form-group">
+          <div class="col-12 col-md-4 form-group">
             <button class="btn btn-dark col-12" style="margin-top:32px;" id="addParametro">Agregar</button>
           </div>
         </div>
         <div class="row" style="margin:15px 0">
-          <label for="textarea">Request json:</label>
+          <label for="textarea" class="response">Request json:</label>
           <textarea class="form-control textarea" rows="5" id="textarea"></textarea>
         </div>
         <div class="row justify-content-center" style="margin:15px 0">
-          <button class="btn btn-dark col-4" type="button" id="Mandar">Mandar</button>
+          <button class="btn btn-dark col-4" type="button" id="mandar">Mandar</button>
         </div>
       </div>
       <div role="tabpanel" class="tab-pane fade" id="Informacion">
         <div class="input-group mb-3">
-          <input type="text" class="form-control Filtrar col-5" placeholder="Buscar ...">
+          <input type="text" class="form-control Filtrar col-8 col-md-5" placeholder="Buscar ...">
         </div>
-        <div class="card mb-3">
-          <img class="card-img-top" src="..." alt="Card image cap">
+        <div class="card cat">
+          <!--<img class="card-img-top" src="..." alt="Card image cap">-->
           <div class="card-body">
             <h5 class="card-title">Crear categoria</h5>
-            <p class="card-text">La implementacion de nuevas categorias se ase medinte una peticion Post a /category pasandole un objeto de tipo
-              { "categorya": [ "Nombre 1", "Nombre 2" ] }, Donde el arreglo de categorya contendra cada nueva categoria que
-              se dese agregar
+            <p class="card-text">
+
+	            La implementacion de nuevas categorias se ase medinte una peticion Post a "/category" pasandole un objeto de tipo
+	              <cite>{ "categorya": [ "Nombre 1", "Nombre 2" ] }</cite>
+	               Donde el arreglo de categorya contendra cada nueva categoria que se dese agregar.
             </p>
             <p class="card-text">
-              <small class="text-muted">Last updated 3 mins ago</small>
+
+              <small class="text-muted">//</small>
             </p>
           </div>
         </div>
-        <div class="card">
+
+        <div class="card post">
           <div class="card-body">
-            <h4 class="card-title">Card title</h4>
-            <p class="card-text hidden">Some example text. Some example text.</p>
+            <h4 class="card-title">Crear Articulo</h4>
+            <p class="card-text">
+
+				Los artículos contienen un título, fecha de creación, fecha de última edición, autor, categoría,
+				etiquetas, un texto de introducción y un texto completo, archivos adjuntos, así como un estado
+				publicado o no.
+				El título debe ser vacío y debe ser único, el texto por su parte debe tener al menos 60
+				caracteres.
+				Salbadas esas restricciones, para crear un artículos se debe una peticion Post a "/post" pasandole un objeto de tipo
+				<cite>
+					{
+					    "title": "titulo",
+					    "full": "texto minimo 60 caracteres ..",
+					    "categoria_id": [
+					        "1",
+					        "2"
+					    ]
+					}
+				</cite>
+            </p>
           </div>
         </div>
+        <div class="card post">
+          <div class="card-body">
+            <h4 class="card-title">Listar publicaciones</h4>
+            <p class="card-text">
+            documentacion de primera entrega para ver los filtros aceptados por el sistema, la solicitud utilisa un sistema de paginado, y filtros para determinar el resultado.Se solicita por un metodo GET a "/post" y mandandole un objeto con la serie de filtros deseada</p>
+          </div>
+        </div>
+        <div class="card post">
+          <div class="card-body">
+            <h4 class="card-title">Ver publicación</h4>
+            <p class="card-text ">
+            igual modo que con el listado se ase llamando a la misma URL SOLO Q ESPESIFICANDO POR MEDIO DE UNA uri el id de la publicacion deseada por ejemplo "/post/1" para ver la publicacion uno</p>
+          </div>
+        </div>
+        <div class="card post">
+          <div class="card-body">
+            <h4 class="card-title">Editar publicación</h4>
+            <p class="card-text ">
+            el post a editar por medio de la url por ejemplo "/post/1" por medio de POST, y pasandole un objeto con los cambios desados este post se actualisara</p>
+          </div>
+        </div>
+
+        <div class="card help">
+          <div class="card-body">
+            <h4 class="card-title">Integrantes</h4>
+            <p class="card-text text-center">
+            Montelongo, Maximilano Langorta, Mauro Piston, Sebastian Diaz </p>
+          </div>
+        </div>
+
+        <div class="card help">
+          <div class="card-body">
+            <h4 class="card-title">Como se iso</h4>
+            <p class="card-text">
+                El flujo de ejecucion si se podria decir de alguna manera, explicando como funciona la api, esta capta culquier peticion mandada, redireccionando la pagina ya sea a un archivo en concreto si existe, o vien verificar si la url tiene una forma adecuada, o bien por otro lado de no coincidir con lo aterior redireccionando a la pagina de testeo/Informacion de la api.
+            <br>     Internamente los llamados son redireccionados a un objeto API, el cual redireccionara a uno Servidor quien determinara la accion que se desea mediante el analis de la url y el metodo de la llamada, esta convocara a la calse q determine indicada, ya sea Post para articulos, Categoria para categorias, o usuarios.
+            <br>     Luego estas clases prosesa la accion que desea depura los datos y se los envia a una objeto determinado y apropiado,quien construlle la query a para consultar a la base de datos, ase la peticion a una clase encargada para ello y luego analiza los datos recibidos, prosesa para entregar de ese modo los datos/respuesta pertinente al caso.</p>
+          </div>
+        </div>
+
+        <div class="card pdf">
+          <div class="card-body">
+            <h4 class="card-title">Letra Laboratorio 1</h4>
+            <p class="card-text text-center">Letra dada por el profesor para el primer laboratorio</p>
+            	<div class="justify-center">
+            	<a href="\pdf\Laboratorio_1.pdf" download="Laboratorio_1.pdf"> Descargar PDF</a>
+            	<a href="\pdf\Laboratorio_1.pdf"  target="_blank"> Ver PDF</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pdf">
+          <div class="card-body">
+            <h4 class="card-title">Entrega Laboratorio 1</h4>
+            <p class="card-text text-center">Entrega del primer laboratorio</p>
+            	<div class="justify-center">
+            	<a href="\pdf\Entrega_Laboratorio_1.pdf" download="Entrega_1.pdf"> Descargar PDF</a>
+            	<a href="\pdf\Entrega_Laboratorio_1.pdf"  target="_blank"> Ver PDF</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card pdf">
+          <div class="card-body">
+            <h4 class="card-title">Letra Laboratorio 2</h4>
+            <p class="card-text text-center">Letra dada por el profesor para el segundo laboratorio</p>
+            	<div class="justify-center">
+            	<a href="\pdf\Laboratorio_2.pdf" download="Laboratorio_2.pdf"> Descargar PDF</a>
+            	<a href="\pdf\Laboratorio_2.pdf"  target="_blank"> Ver PDF</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card sql">
+          <div class="card-body">
+            <h4 class="card-title">Script con SQL</h4>
+            <p class="card-text text-center">Script para crear las tablas de la base de datos</p>
+            	<div class="justify-center">
+            	<a href="\pdf\Sql.sql" download="Sql.sql"> Descargar sql</a>
+            </div>
+          </div>
+        </div>
+
         <h2 class="NoHayTexto text-center hidden" style="color: rgba(0, 0, 0, .1);font-weight: 900;margin: 50px 0">No hay texto</h2>
       </div>
     </div>
-
-
     <div class="stripes hidden"> </div>
-
-
-
+    <a href="#body" class="up fas fa-chevron-up"></a>
   </div>
-
   <footer>
+  	<label class="text-center" style="width: 100%;padding: 1.5rem 0;text-transform: uppercase;color: #ddd">Segundo Laboratorio | versión Beta | 06 - 2018</label>
   </footer>
 
 </body>

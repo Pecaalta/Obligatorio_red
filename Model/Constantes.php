@@ -9,7 +9,7 @@
 define("servername", "localhost");
 define("username", "root");
 define("password", "");
-define("dbname", "mydb");
+define("dbname", "api");
 
 define("limite", 10);
 

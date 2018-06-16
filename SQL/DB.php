@@ -34,6 +34,20 @@ class DB {
             return false;
         }
     }
+    
+    public function create($sql) {
+        try {
+            $resultat = $this->conn->query($sql);
+            if (!$resultat) {
+                return false;
+            } else {
+                return $this->conn->insert_id;
+            }
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            return false;
+        }
+    }
 
     public function finalisar() {
         $this->conn->commit();
